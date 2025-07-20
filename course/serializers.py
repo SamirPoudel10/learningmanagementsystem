@@ -58,10 +58,10 @@ class StudentSerializer(serializers.ModelSerializer):
   
 class EnrollmentSerializer(serializers.ModelSerializer):
     course = CourseSerializer()  # Nested Course Details
-
+    student=StudentSerializer()
     class Meta:
         model = Student_enrollment
-        fields = ['course', 'status','grade']
+        fields = ['course', 'status','grade','student']
 
 class CartSerializer(serializers.ModelSerializer):
     student=StudentSerializer()

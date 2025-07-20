@@ -21,7 +21,19 @@ class Courselist(APIView):
         print(serialiser)
         return Response({'courses': serialiser.data}, status=status.HTTP_200_OK)
 class Studentlist(APIView):
-    def get(self,request,format=None):
-        course=Course.objects.filter(teacher=1)
-        
-    
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        teacher=1
+
+        courses = Course.objects.filter(teacher=teacher)
+        print(courses)
+
+        all_enrollments = []
+        for course in courses:
+            print(course.id)
+            enrollments = Student_enrollment.objects.filter(course=course.id)
+            serializer = EnrollmentSerializer(enrollments, many=True)
+            all_enrollments.extend(serializer.data)  # accumulate serialized data
+        print(all_enrollments)
+        return Response({'courses': all_enrollments}, status=status.HTTP_200_OK)

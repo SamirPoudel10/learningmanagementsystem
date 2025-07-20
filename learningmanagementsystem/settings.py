@@ -22,8 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d^_)a^e=6@=pjsk$3(c(@ws7fd$e4-%ei-83o7ua0w*d571=z4'
-
+SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = ['*']
@@ -57,16 +56,16 @@ INSTALLED_APPS = [
 ]   
 CLOUDINARY_STORAGE = {
     
-    'CLOUD_NAME': 'dsplrofw1',
-    'API_KEY': '698519256231272',
-    'API_SECRET': 'Xom1TME-LYJOp02SUuMB2Rm0zaQ',
+    'CLOUD_NAME': config('cloud_name'),
+    'API_KEY': config('api_key'),
+    'API_SECRET': config('api_secret'),
 }
 
 
 cloudinary.config( 
-  cloud_name = 'dsplrofw1', 
-  api_key = '698519256231272', 
-  api_secret = 'Xom1TME-LYJOp02SUuMB2Rm0zaQ',
+  cloud_name = config('cloud_name'), 
+  api_key =config('api_key'), 
+  api_secret = config('api_secret'),
   secure = True
 )
 LOGIN_URL = '/login/'
@@ -96,9 +95,8 @@ AUTH_USER_MODEL='Student.Student'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_PORT=587
-EMAIL_HOST_USER=os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_PASS')
-
+EMAIL_HOST_USER=config('Email_user')
+EMAIL_HOST_PASSWORD=config('Email_pass')
 
 EMAIL_USE_TLS=True
 EMAIL_USE_SSL=False
@@ -128,8 +126,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'lms_default',
-        'USER':'root',
-        'PASSWORD':config('DB_password'),
+        'USER':config('DB_USER'),
+        'PASSWORD':config('DB_password' ),
         'HOST':'localhost',
         'PORT':'3306',
     }

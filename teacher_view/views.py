@@ -13,7 +13,7 @@ def dashboard(request):
 def course(request):
     access_token = request.COOKIES.get('access_token')  # Use access token
     if not access_token:
-        return render(request, 'mycourse.html', {'courses': [], 'error': 'Access token missing'})
+        return render(request, 'teacher_view/course.html', {'courses': [], 'error': 'Access token missing'})
 
     api_url = 'http://127.0.0.1:8000/api/teacher/course'
     headers = {'Authorization': f'Bearer {access_token}'}  # Use Bearer prefix for JWT
@@ -162,4 +162,33 @@ def category_add(request):
 
 
 def student(request):
+    access_token = request.COOKIES.get('access_token')
+    if not access_token:
+        return render(request, 'teacher_view/student.html', {
+            'courses': [], 
+            'error': 'Access token missing'
+        })
+    api_url = 'http://127.0.0.1:8000/api/teacher/student/'
+    headers = {'Authorization': f'Bearer {access_token}'}
+    response = requests.get(api_url,  headers=headers)
+    course=[]
+    if response.status_code == 200:
+        course=response.json()
+        return render(request,'teacher_view/student.html',course)
+    
+    elif response.status_code == 401:
+        refresh_token = request.COOKIES.get('refresh_token')
+        if refresh_token:
+            refresh_api_url = 'http://127.0.0.1:8000/api/token/refresh/'
+            refresh_response = requests.post(refresh_api_url, json={'refresh': refresh_token})
+            if refresh_response.status_code == 200:
+                new_access_token = refresh_response.json().get('access')
+                if new_access_token:
+                    resp = redirect('course_add')
+                    resp.set_cookie('access_token', new_access_token, httponly=True, samesite='Lax')
+                    return resp
+            return redirect('login_page')
+        else:
+            return redirect('login_page')
+    print(course)
     return render(request,'teacher_view/student.html')
